@@ -1,6 +1,8 @@
 package com.notes.leetcode;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
@@ -21,8 +23,6 @@ import java.util.Arrays;
  */
 public class Question1 {
 
-
-
     public static void main(String[] args) {
         int[] nums = {2, 11, 15, 7};
         int target = 9;
@@ -30,8 +30,32 @@ public class Question1 {
         System.out.println(Arrays.toString(solution1.twoSum1(nums, target)));
     }
 
-    private long[] twoSum1(int[] nums, int target) {
+    public int[] twoSum(int[] nums, int target) {
+        for (int i = 0; i < nums.length ; i++) {
+            int first = nums[i];
+            for (int j = i+1; j < nums.length; j++) {
+                int next = nums[j];
+                int sum = first + next;
+                if(sum == target){
+                    return new int[]{i,j};
+                }
+            }
+        }
+        return new int[]{};
+    }
 
-        return null;
+    public int[] twoSum1(int[] nums, int target) {
+        final int length = nums.length;
+        Map<Integer, Integer> map = new HashMap<>(length);
+        for (int i = 0; i < length ; i++) {
+            final int num = nums[i];
+            final int sub = target - num;
+            if(map.containsKey(sub)){
+                return new int[]{map.get(sub),i};
+            }else {
+                map.put(num,i);
+            }
+        }
+        return new int[0];
     }
 }

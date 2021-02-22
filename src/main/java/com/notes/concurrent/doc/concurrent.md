@@ -6,7 +6,8 @@
    > 2. 原子性：  线程切换带来的原子性问题 由于cpu速度太快 为了更好的利用cpu操作系统带来了线程切换
      时间片：
      ![atomicity](https://static001.geekbang.org/resource/image/25/fb/254b129b145d80e9bb74123d6e620efb.png)
-     
+     线程切换 
+     ![thread_change](https://static001.geekbang.org/resource/image/33/63/33777c468872cb9a99b3cdc1ff597063.png)
    > 3. 有序性：  编译优化带来的有序性问题 由于java是高级语言 所以通常一条语句代表多条
         指令。编译器为了性能有时会更改程序中语句的先后顺序或者指令的先后顺序。这同样是
         违背我们正常逻辑的行为。

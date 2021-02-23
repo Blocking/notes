@@ -27,7 +27,22 @@ public class Question1 {
         int[] nums = {2, 11, 15, 7};
         int target = 9;
         Question1 solution1 = new Question1();
-        System.out.println(Arrays.toString(solution1.twoSum1(nums, target)));
+        System.out.println(Arrays.toString(solution1.twoSum2(nums, target)));
+    }
+
+    public int[] twoSum2(int[] nums , int target){
+        Map<Integer,Integer> maps = new HashMap<>();
+        /*for (int i = 0; i < nums.length; i++) {
+            maps.put(nums[i], i);
+        }*/
+        for (int i = 0; i < nums.length; i++) {
+            final int i1 = target - nums[i];
+            maps.put(nums[i], i);
+            if(maps.containsKey(i1)){
+                return new int[]{i,maps.get(i1)};
+            }
+        }
+        return new int[]{};
     }
 
     public int[] twoSum(int[] nums, int target) {

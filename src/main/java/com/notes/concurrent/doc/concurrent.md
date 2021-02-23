@@ -28,7 +28,7 @@
        以及六项 **Happens-Before** 规则。
        
 + **Happens-Before 规则**
-    1. **程序的顺序性**： 同一个线程中，按照程序的顺序，前面的操作Happen-Before于后续的任意操作
+    1. **程序的顺序性**： **_同一个线程中_**，按照程序的顺序，前面的操作Happen-Before于后续的任意操作
         ，既程序前面对某个变量的操作对后续操作可见。
     2. **volatile 变量规则**： 对一个volatile变量的写操作Happen-Before于后续对这个volatile变量的读操作
     3. **传递性**： 如果 A Happen-Before B，B Happen-Before C ，那么A Happen-Before C。    

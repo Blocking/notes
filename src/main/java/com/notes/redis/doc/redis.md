@@ -30,3 +30,21 @@ redis本身良好支持集群扩展、lua脚本、LRU驱逐策略、事物、以
 
 #### simple KV 到 redis
 ![compare](https://static001.geekbang.org/resource/image/30/44/30e0e0eb0b475e6082dd14e63c13ed44.jpg)
+
+##02 ｜数据结构：快速的Redis有哪些慢操作
+redis解决hash的方式是链表、rehash（渐进式hash 每处理一份请求顺带着将索引位置的所有entries拷贝到hash表2中 不阻塞redis线程，使得线程可以处理其它请求）
++ redis 的基本数据类型：
++ String-简单动态字符串  
++ List - 双向链表、压缩列表   
++ Hash - 哈希表、压缩列表
++ Set - 哈希表、整数数组
++ SortedSet - 压缩列表、跳表
++ stream
+![base_struct](https://static001.geekbang.org/resource/image/82/01/8219f7yy651e566d47cc9f661b399f01.jpg)
+  > 压缩列表 类似与一个数组 与数组不同的是表头有三个字段zlbytes、zltail、zlen分别表示列表长度、列表偏移量以及列表中entry数量，在表尾还有一个zlend表示结束
+  ![zList](https://static001.geekbang.org/resource/image/95/a0/9587e483f6ea82f560ff10484aaca4a0.jpg)
+  > 跳表 跳表在链表的基础上增加了多级索引、通过索引位置的几个跳转，实现数据的快速定位.
+  ![zTable](https://static001.geekbang.org/resource/image/1e/b4/1eca7135d38de2yy16681c2bbc4f3fb4.jpg)
+  
+#### 数据查找的时间复杂度
+![Time_Complex](https://static001.geekbang.org/resource/image/fb/f0/fb7e3612ddee8a0ea49b7c40673a0cf0.jpg)

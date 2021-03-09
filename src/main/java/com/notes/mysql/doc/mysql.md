@@ -1,7 +1,7 @@
-#mysql
+# mysql
 
-##基础架构
-####mysql 基本架构示意图
+## 基础架构
+#### mysql 基本架构示意图
 ![架构](https://static001.geekbang.org/resource/image/0d/d9/0d2070e8f84c4801adbfa03bda1f98d9.png)
 
 #### 大体来说mysql分为 server层 和 数据存储引擎俩部分
@@ -34,5 +34,35 @@ mysql8.0之前提供了按需使用的策略，8.0之后该功能模块已被移
 ### 5.执行器
 sql优化完毕就开始真正执行了，首先判断有没有对操作的表有权限
 
+## 日志系统
+### redo log
++ 属于innodb独有 是存储层的日志 记录物理页的修改
++ redo log 是固定大小、循环读写的
+  > 1、write pos 当前记录的位置 要写的位置  
+  > 2、提供了 crash safe 能力 （即使数据库发生异常重启，之前提交的记录都不会丢失，这个能力称为 crash-safe。）
+  > 3、check point  检查的点位 当前要擦除的位置
+  ![position](https://static001.geekbang.org/resource/image/16/a7/16a7950217b3f0f4ed02db5db59562a7.png)
+  
+### binlog
++ binlog 是server层的日志 是记录逻辑修改的 分为statement、row模式 row模式下会记录修改之前和之后的数据 所以日志会变得很大
++ binlog是追加读写的 只要磁盘够大 会一直写下去
+
+### sql执行流程
+    update Table set row = row +1 where id = 2
+- 1、执行器先找 id = 2 这一行数据。id是主键 引擎直接使用树搜索找到这一行。如果id = 2 这一行所在的数据页本来就缓存在内存中，就直接
+返回给执行器；否则先要从磁盘读入内存，然后再返回。
+- 2、执行器拿到引擎给的数据 将其加1 得到新的一行数据 再调用引擎接口将数据写回
+- 3、引擎将这行新数据更新到内存中 同时将这个更新操作记录到redo log里面，此时 redo log处于prepare状态。然后告知执行器执行完了，可以
+随时提交事物
+- 4、执行器生成这个操作的binlog，并将把binlog写入磁盘
+- 5、执行器调用引擎的提交事物接口，引擎把刚刚写入的redo log改成提交(commit)状态，更新完成。
+    ![流程图](https://static001.geekbang.org/resource/image/2e/be/2e5bff4910ec189fe1ee6e2ecc7b4bbe.png)
+
+### 总结   
+1、redo log 拆成俩个状态 prepare、commit，这就是俩阶段提交，保证俩个日志的一致性 我们常用的分布式事物也是这样做的。俩阶段提交
+是跨服务维持数据逻辑一致性时常用的一种解决方案  
+2、redo log 用于保证 crash-safe能力。        
+（1）innodb_flush_log_at_trx_commit 这个参数设置成 1 的时候，表示每次事务的 redo log 都直接持久化到磁盘。这个参数我建议你设置成 1，这样可以保证 MySQL 异常重启之后数据不丢失。   
+（2）sync_binlog 这个参数设置成 1 的时候，表示每次事务的 binlog 都持久化到磁盘。这个参数我也建议你设置成 1，这样可以保证 MySQL 异常重启之后 binlog 不丢失。
 
 

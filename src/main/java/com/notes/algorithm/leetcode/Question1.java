@@ -1,4 +1,4 @@
-package com.notes.leetcode;
+package com.notes.algorithm.leetcode;
 
 import java.util.Arrays;
 import java.util.HashMap;

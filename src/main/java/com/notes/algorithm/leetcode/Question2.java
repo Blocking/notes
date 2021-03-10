@@ -1,4 +1,4 @@
-package com.notes.leetcode;
+package com.notes.algorithm.leetcode;
 
 import org.junit.Test;
 
